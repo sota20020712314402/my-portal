@@ -1,3 +1,15 @@
+// --- パスワード保護の追加 ---
+(function() {
+    const password = prompt("0712");
+    if (password !== "sota123") { // 「sota123」の部分を好きなパスワードに変えてください
+        alert("パスワードが違います。アクセスできません。");
+        document.body.innerHTML = '<div style="color:white; text-align:center; margin-top:100px;"><h1>Forbidden</h1><p>正しいパスワードが必要です。</p></div>';
+        window.stop(); // 読み込みをストップ
+    }
+})();
+// -----------------------
+
+// ここから下に、以前書いたメニュー開閉や占いのコードが続くようにします
 const menuIcon = document.getElementById('menu-icon');
 const sidebar = document.getElementById('sidebar');
 
