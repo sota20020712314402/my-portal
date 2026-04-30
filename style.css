@@ -1,8 +1,7 @@
-/* 全体の基本スタイル */
 body {
-    background: #1a1a2e;
+    background: #050510; /* より深い宇宙の黒 */
     color: #e9ecef;
-    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-family: sans-serif;
     margin: 0;
     display: flex;
     justify-content: center;
@@ -13,14 +12,13 @@ body {
     margin-top: 80px;
     width: 90%;
     max-width: 600px;
-    background: #16213e;
+    background: #111122;
     padding: 30px;
     border-radius: 15px;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    box-shadow: 0 0 20px rgba(76, 201, 240, 0.2);
 }
 
-/* 三本線アイコン */
 .menu-icon {
     width: 30px;
     height: 20px;
@@ -39,31 +37,25 @@ body {
     height: 3px;
     width: 100%;
     background-color: #4cc9f0;
-    border-radius: 3px;
     transition: 0.3s;
 }
 
-/* サイドバー */
 .sidebar {
     position: fixed;
     top: 0;
     left: -250px;
     width: 250px;
     height: 100%;
-    background: #0f3460;
+    background: #0a0a1a;
     display: flex;
     flex-direction: column;
     padding-top: 80px;
-    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: 0.3s;
     z-index: 100;
-    box-shadow: 5px 0 15px rgba(0,0,0,0.3);
 }
 
-.sidebar.open {
-    left: 0;
-}
+.sidebar.open { left: 0; }
 
-/* ボタン・入力欄の共通スタイル */
 .tab-btn {
     background: none;
     border: none;
@@ -72,59 +64,34 @@ body {
     text-align: left;
     font-size: 1rem;
     cursor: pointer;
-    border-bottom: 1px solid #16213e;
-    transition: 0.2s;
 }
 
-.tab-btn:hover, .tab-btn.active {
-    color: #4cc9f0;
-    background: #1a1a2e;
-}
+.tab-btn.active { color: #4cc9f0; background: #1a1a3a; }
 
 button {
     background: #4cc9f0;
-    color: #1a1a2e;
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
-    font-weight: bold;
     cursor: pointer;
-    transition: 0.2s;
+    font-weight: bold;
+    margin-top: 10px;
 }
 
-button:hover {
-    background: #4895ef;
-    transform: translateY(-2px);
-}
-
-input, select {
-    background: #1a1a2e;
-    color: white;
+/* プラネタリウム用のキャンバス設定 */
+#starCanvas {
+    background: #000;
     border: 1px solid #4cc9f0;
-    padding: 10px;
-    border-radius: 5px;
-    margin: 10px 0;
-    width: 80%;
+    width: 100%;
+    height: 300px;
+    margin-top: 15px;
+    border-radius: 10px;
+    cursor: crosshair;
 }
 
-/* タブの表示制御 */
 .tab-content { display: none; }
-.tab-content.active { display: block; animation: fadeIn 0.5s; }
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+.tab-content.active { display: block; }
 
 .link-list { list-style: none; padding: 0; }
 .link-list li { margin: 15px 0; }
-.link-list a { color: #4cc9f0; text-decoration: none; font-size: 1.1rem; border-bottom: 1px solid transparent; transition: 0.2s; }
-.link-list a:hover { border-bottom: 1px solid #4cc9f0; }
-
-#fitness-result {
-    margin-top: 20px;
-    text-align: left;
-    background: #0f3460;
-    padding: 15px;
-    border-radius: 10px;
-}
+.link-list a { color: #4cc9f0; text-decoration: none; }
