@@ -8,7 +8,7 @@
 </head>
 <body>
 
-    <!-- 三本線ボタン -->
+    <!-- 三本線ボタン（ハンバーガーメニュー） -->
     <div id="menu-icon" class="menu-icon">
         <span></span>
         <span></span>
@@ -19,6 +19,9 @@
     <nav id="sidebar" class="sidebar">
         <button class="tab-btn active" onclick="openTab('home')">Home</button>
         <button class="tab-btn" onclick="openTab('links')">Useful Links</button>
+        <button class="tab-btn" onclick="openTab('fitness')">Fitness Calc</button>
+        <button class="tab-btn" onclick="openTab('space-walk')">Space Walk</button>
+        <button class="tab-btn" onclick="openTab('m1-quotes')">M-1 Quotes</button>
         <button class="tab-btn" onclick="openTab('fortune')">Fortune</button>
     </nav>
 
@@ -27,12 +30,13 @@
             <h1>My Portal</h1>
         </header>
 
-        <!-- コンテンツエリア -->
+        <!-- ホーム -->
         <div id="home" class="tab-content active">
             <h2>Welcome</h2>
-            <p>左上の三本線メニューから切り替えてください。</p>
+            <p>左上の三本線メニューから、各機能にアクセスできます。</p>
         </div>
 
+        <!-- リンク集 -->
         <div id="links" class="tab-content">
             <h2>Quick Links</h2>
             <ul class="link-list">
@@ -40,14 +44,45 @@
                 <li><a href="https://ui.adsabs.harvard.edu/" target="_blank">NASA ADS (論文検索)</a></li>
                 <li><a href="https://github.com/" target="_blank">GitHub</a></li>
                 <li><a href="https://scholar.google.co.jp/" target="_blank">Google Scholar</a></li>
-</ul>
+            </ul>
         </div>
 
+        <!-- 筋トレ計算 -->
+        <div id="fitness" class="tab-content">
+            <h2>筋肥大カロリー計算</h2>
+            <p>「ゴツくなる」ための1日の摂取目安を算出します。</p>
+            <input type="number" id="weight-input" placeholder="体重 (kg)">
+            <button onclick="calcFitness()">計算する</button>
+            <div id="fitness-result"></div>
+        </div>
+
+        <!-- 宇宙徒歩 -->
+        <div id="space-walk" class="tab-content">
+            <h2>天体徒歩シミュレーター</h2>
+            <p>宇宙の距離を「徒歩（時速4km）」で体感しましょう。</p>
+            <select id="target-astro">
+                <option value="384400">月 (38万km)</option>
+                <option value="150000000">太陽 (1.5億km)</option>
+                <option value="40000000000000">プロキシマ・ケンタウリ (4.2光年)</option>
+            </select>
+            <button onclick="calcSpaceWalk()">歩行開始</button>
+            <p id="walk-result"></p>
+        </div>
+
+        <!-- M-1語録 -->
+        <div id="m1-quotes" class="tab-content">
+            <h2>M-1 語録</h2>
+            <p id="quote-text">「いなせだねぇ〜」</p>
+            <button onclick="showM1Quote()">名言を出す</button>
+        </div>
+
+        <!-- 占い -->
         <div id="fortune" class="tab-content">
             <h2>Fortune Teller</h2>
             <p id="fortune-text">今日の運勢を占おう！</p>
-            <button id="fortuneButton">占う</button>
+            <button id="fortuneButton" onclick="tellFortune()">占う</button>
         </div>
+
     </div>
 
     <script src="script.js"></script>
