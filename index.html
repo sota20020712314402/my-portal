@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- 三本線ボタン -->
+    <div id="menu-icon" class="menu-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <!-- サイドバー -->
+    <nav id="sidebar" class="sidebar">
+        <button class="tab-btn active" onclick="openTab('home')">Home</button>
+        <button class="tab-btn" onclick="openTab('links')">Useful Links</button>
+        <button class="tab-btn" onclick="openTab('fortune')">Fortune</button>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1>My Portal</h1>
+        </header>
+
+        <!-- コンテンツエリア -->
+        <div id="home" class="tab-content active">
+            <h2>Welcome</h2>
+            <p>左上の三本線メニューから切り替えてください。</p>
+        </div>
+
+        <div id="links" class="tab-content">
+            <h2>Quick Links</h2>
+            <ul class="link-list">
+                <li><a href="https://www.google.com" target="_blank">Google</a></li>
+                <li><a href="https://github.com" target="_blank">GitHub</a></li>
+                <li><a href="https://scholar.google.co.jp" target="_blank">Google Scholar</a></li>
+            </ul>
+        </div>
+
+        <div id="fortune" class="tab-content">
+            <h2>Fortune Teller</h2>
+            <p id="fortune-text">今日の運勢を占おう！</p>
+            <button id="fortuneButton">占う</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+body {
+    background: #1a1a2e;
+    color: #e9ecef;
+    font-family: sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+.container {
+    margin-top: 80px;
+    width: 90%;
+    max-width: 600px;
+    background: #16213e;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+}
+
+/* 三本線アイコン */
+.menu-icon {
+    width: 30px;
+    height: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    position: fixed;
+    top: 30px;
+    left: 30px;
+    z-index: 200;
+}
+
+.menu-icon span {
+    display: block;
+    height: 3px;
+    width: 100%;
+    background-color: #4cc9f0;
+    transition: 0.3s;
+}
+
+/* サイドバー */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100%;
+    background: #111d35;
+    display: flex;
+    flex-direction: column;
+    padding-top: 80px;
+    transition: 0.3s;
+    z-index: 100;
+}
+
+.sidebar.open {
+    left: 0;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    color: #888;
+    padding: 20px;
+    text-align: left;
+    font-size: 1.1rem;
+    cursor: pointer;
+    border-bottom: 1px solid #1a1a2e;
+}
+
+.tab-btn.active {
+    color: #4cc9f0;
+    background: #1a1a2e;
+}
+
+/* コンテンツ表示切り替え */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.link-list { list-style: none; padding: 0; }
+.link-list a { color: #4cc9f0; text-decoration: none; font-size: 1.2rem; }
+
+button#fortuneButton {
+    background: #4cc9f0;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+}
