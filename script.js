@@ -1,152 +1,761 @@
-// --- 1. パスワード保護 (0712) ---
-(function() {
-    const password = prompt("パスワードを入力してください");
-    if (password !== "0712") {
-        alert("アクセス拒否");
-        document.body.innerHTML = '<div style="color:white; text-align:center; margin-top:100px;"><h1>Forbidden</h1></div>';
+// 1. パスワード保護 (0712)
+(function(){
+    if(prompt("Password")!=="0712"){
+        document.body.innerHTML='<div style="color:white; text-align:center; margin-top:100px;"><h1>Forbidden</h1></div>';
         window.stop();
     }
 })();
 
-// --- 2. メニュー開閉 ---
+// 2. サイドバー制御
 const menuIcon = document.getElementById('menu-icon');
 const sidebar = document.getElementById('sidebar');
+menuIcon.addEventListener('click', () => sidebar.classList.toggle('open'));
 
-menuIcon.addEventListener('click', () => {
-    sidebar.classList.toggle('open');
-});
-
-// --- 3. タブ切り替え ---
 function openTab(tabName) {
     const contents = document.getElementsByClassName('tab-content');
-    for (let content of contents) content.classList.remove('active');
+    for (let c of contents) c.classList.remove('active');
     document.getElementById(tabName).classList.add('active');
 
     const buttons = document.getElementsByClassName('tab-btn');
-    for (let btn of buttons) btn.classList.remove('active');
-    
-    if (event && event.currentTarget) {
-        event.currentTarget.classList.add('active');
-    }
-    
+    for (let b of buttons) b.classList.remove('active');
+    if (event && event.currentTarget) event.currentTarget.classList.add('active');
+
     sidebar.classList.remove('open');
 }
 
-// --- 4. ito用 乱数生成 ---
-function generateRandomNumber() {
-    const num = Math.floor(Math.random() * 100) + 1; // 1から100まで
-    const display = document.getElementById('number-display');
-    
-    // 少し演出：一瞬消してから表示
-    display.style.opacity = 0;
-    setTimeout(() => {
-        display.innerText = num;
-        display.style.opacity = 1;
-    }, 100);
-}
-
-// --- 5. 占い ---
-function tellFortune() {
-    const messages = ["大吉", "中吉", "小吉", "吉", "天文吉"];
-    const res = messages[Math.floor(Math.random() * messages.length)];
-    document.getElementById('fortune-text').innerText = "運勢： " + res;
-    const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16);
-    document.body.style.background = randomColor;
-}
-
-// --- グルメデータベース (ここにお店を追加していく) ---
+// --- 3. グルメ機能 (新ジャンル対応版) ---
 const myShops = [
-    {
-        name: "埼玉大学 近くの定食屋",
-        lat: 35.8624, lng: 139.6074,
-        category: "定食",
-        status: "visited",
-        rating: "★★★★☆",
-        comment: "ご飯お代わり無料でバルクアップに最適。",
-        url: "https://tabelog.com/..."
+    { 
+        name: "きみや", 
+        lat: 35.00483420519238, lng: 135.77030261216007, 
+        category: "居酒屋",
+        area: "京都",
+        isHyakumeiten: false, 
+        status: "visited", 
+        price: "〜2,000円",
+        rating: "★★★★☆", 
+        comment: "カウンタータイプ。店主おもろい。", 
+        recommend: "筑前煮",
+        url: "https://tabelog.com/kyoto/A2601/A260201/26008213/" 
     },
-    {
-        name: "大宮の気になるラーメン店",
-        lat: 35.9064, lng: 139.6239,
-        category: "ラーメン",
-        status: "wishlist",
-        rating: "-",
-        comment: "百名店常連らしい。週末に行きたい。",
-        url: "https://tabelog.com/..."
-    }
+    { 
+        name: "たち呑み しゃーぷ", 
+        lat: 35.00297944997191, lng: 135.77061945046935,
+        isHyakumeiten: true, 
+        category: "居酒屋",
+        area: "京都", 
+        status: "visited", 
+        price: "〜2,000円",
+        rating: "★★★★★", 
+        comment: "京都で日本酒楽しみたいならここ。海鮮も最高。", 
+        recommend: "刺し身盛り合わせ",
+        url: "https://tabelog.com/kyoto/A2601/A260201/26034846/" 
+    },
+    { 
+        name: "へんこつ", 
+        lat: 34.98876523151053, lng: 135.75846433445727, 
+        isHyakumeiten: true, 
+        category: "居酒屋",
+        area: "京都", 
+        status: "visited", 
+        price: "〜2,000円",
+        rating: "★★★★★", 
+        comment: "煮込みしかない。でもそれが最高。", 
+        recommend: "サルベージ・筋肉・テール",
+        url: "https://tabelog.com/kyoto/A2601/A260101/26000797/" 
+        
+    },
+    { 
+        name: "ル・ポポタン", 
+        lat: 35.8666045234282, lng: 139.52359191034395, 
+        isHyakumeiten: false, 
+        category: "パン",
+        area: "ふじみ野", 
+        status: "visited", 
+        price: "〜1,000円",
+        rating: "★★★☆☆", 
+        comment: "菓子パン多め。ないパンは聞いてみたら出てくるかも。", 
+        recommend: "全粒粉塩パン",
+        url: "https://tabelog.com/saitama/A1103/A110302/11042001/" 
+    },
+    { 
+        name: "ベイクハウス イエローナイフ", 
+        lat: 35.86113665434586,  lng: 139.6492448698633, 
+        isHyakumeiten: false, 
+        category: "パン", 
+        area: "浦和",
+        status: "visited", 
+        price: "〜2,000円",
+        rating: "★★★★★", 
+        comment: "売り切れ注意。シンプルなパンほどうまい。サンドウィッチも至高", 
+        recommend: "くるみパン・チーズとナッツのパン",
+        url: "https://tabelog.com/saitama/A1101/A110102/11047780/" 
+    },
+    { 
+        name: "ウラワ ベーカリー", 
+        lat: 35.86091388425164,  lng:139.64650973917924, 
+        isHyakumeiten: false, 
+        category: "パン", 
+        area: "浦和",
+        status: "visited", 
+        price: "〜1,500円",
+        rating: "★★★☆☆", 
+        comment: "ピザ系パンうまい。お店の雰囲気好き。", 
+        recommend: "ジェノベーゼピザ・バターフランスパン",
+        url: "https://tabelog.com/saitama/A1101/A110102/11037556/" 
+    },
+    { 
+        name: "沼津 すし之助 沼津本店 ", 
+        lat: 35.08107041056565, lng: 138.8705189814789, 
+        isHyakumeiten: false, 
+        category: "寿司", 
+        area: "沼津",
+        status: "visited", 
+        price: "〜4,000円",
+        rating: "★★★★★", 
+        comment: "こぼれる軍艦最高。", 
+        recommend: "ホワイトボードを見るべし",
+        url: "https://tabelog.com/shizuoka/A2205/A220501/22003495/" 
+    },
+    { 
+        name: "焼肉ニューひうち", 
+        lat: 35.907152902850235,  lng: 139.62006551034554, 
+        isHyakumeiten: true, 
+        category: "焼き肉", 
+        area: "大宮",
+        status: "visited", 
+        price: "〜5,000円",
+        rating: "★★★★★", 
+        comment: "コースでも良いし、アラカルトでも良い。肉質最高。", 
+        recommend: "全部・炙りハツ刺し",
+        url: "https://tabelog.com/saitama/A1101/A110101/11063728/" 
+    },  
+    { 
+        name: "わたや", 
+        lat: 35.87947840113121, lng:  139.64127629012296, 
+        isHyakumeiten: true, 
+        category: "居酒屋", 
+        area: "浦和",
+        status: "wishlist", 
+        price: "高め？",
+        rating: "", 
+        comment: "行きたい", 
+        recommend: "",
+        url: "https://tabelog.com/saitama/A1101/A110102/11028872/" 
+    },  
+    { 
+        name: "立ち呑みハルカゼ", 
+        lat: 35.88535562839757, lng:  139.63895219869966, 
+        isHyakumeiten: false, 
+        category: "居酒屋", 
+        area: "与野",
+        status: "wishlist", 
+        price: "安い？",
+        rating: "", 
+        comment: "行きたい", 
+        recommend: "",
+        url: "https://tabelog.com/saitama/A1101/A110101/11066597/" 
+    },  
+    { 
+        name: "三丁目の手打うどん", 
+        lat: 35.8216320588911,  lng: 139.41837725451978, 
+        isHyakumeiten: true, 
+        category: "うどん", 
+        area: "武蔵藤沢",
+        status: "wishlist", 
+        price: "〜2,000円",
+        rating: "", 
+        comment: "行きたい", 
+        recommend: "",
+        url: "https://tabelog.com/saitama/A1106/A110602/11001573/" 
+    },  
+    { 
+        name: "大衆酒場BEETLE 浦和", 
+        lat: 35.86047988995112, lng:  139.65418761219226,
+        isHyakumeiten: false, 
+        category: "居酒屋", 
+        area: "浦和",
+        status: "visited", 
+        price: "〜3,000円",
+        rating: "★★☆☆☆", 
+        comment: "大衆。安いけど、味は普通。", 
+        recommend: "煮込み・唐揚げ",
+        url: "https://tabelog.com/saitama/A1101/A110102/11045239/" 
+    },  
+    { 
+        name: "手打 焔", 
+        lat: 36.96223928945609,  lng: 140.02914601408335, 
+        isHyakumeiten: true, 
+        category: "ラーメン", 
+        area: "那須",
+        status: "wishlist", 
+        price: "〜1,000円",
+        rating: "", 
+        comment: "行きたい", 
+        recommend: "",
+        url: "https://tabelog.com/tochigi/A0905/A090501/9011436/" 
+    },  
+    { 
+        name: "SHŌPAIN Artisan Bakehouse", 
+        lat: 36.88735761330651, lng:  139.97093192572535, 
+        isHyakumeiten: true, 
+        category: "パン", 
+        area: "那須",
+        status: "visited", 
+        price: "〜1,000円",
+        rating: "★★★★★", 
+        comment: "最高のパン屋。全部うまい。", 
+        recommend: "チーズパン・マラサダ",
+        url: "https://tabelog.com/tochigi/A0905/A090501/9017538/" 
+    },  
+    { 
+        name: "なうら酒場", 
+        lat: 35.848495601719506,  lng: 139.6690195256854, 
+        isHyakumeiten: false, 
+        category: "居酒屋", 
+        area: "南浦和",
+        status: "visited", 
+        price: "〜2,000円",
+        rating: "★★★☆☆", 
+        comment: "カウンターのみの小さなお店。", 
+        recommend: "おでん",
+        url: "https://tabelog.com/saitama/A1101/A110102/11066267/" 
+    },  
+    { 
+        name: "割烹 縮", 
+        lat: 35.86116789049449,  lng: 139.65708245452123, 
+        isHyakumeiten: false, 
+        category: "和食", 
+        area: "浦和",
+        status: "visited", 
+        price: "〜7,000円",
+        rating: "★★★★★", 
+        comment: "雰囲気良し。記念日に是非。料理も飲み物も最高。", 
+        recommend: "全部",
+        url: "https://tabelog.com/saitama/A1101/A110102/11036935/" 
+    },  
+    { 
+        name: "三代目とも", 
+        lat: 35.84822299882229,  lng: 139.66917839684982, 
+        isHyakumeiten: false, 
+        category: "居酒屋", 
+        area: "南浦和",
+        status: "visited", 
+        price: "〜3,500円",
+        rating: "★★★★☆", 
+        comment: "大衆居酒屋。串より海鮮がうまい。", 
+        recommend: "海鮮系全般",
+        url: "https://tabelog.com/saitama/A1101/A110102/11025246/" 
+    },  
+    { 
+        name: "蒼屋", 
+        lat: 35.848596891879595,  lng: 139.66880288743667, 
+        isHyakumeiten: false, 
+        category: "居酒屋", 
+        area: "南浦和",
+        status: "visited", 
+        price: "〜2,000円",
+        rating: "★★★★☆", 
+        comment: "串焼きがうまい。どうやら平日の方がうまいらしい。", 
+        recommend: "串焼き",
+        url: "https://tabelog.com/saitama/A1101/A110102/11039331/" 
+    },  
+    { 
+        name: "立飲み たきおか", 
+        lat: 35.71040577797346, lng:  139.77546929684445, 
+        isHyakumeiten: false, 
+        category: "居酒屋", 
+        area: "上野",
+        status: "visited", 
+        price: "〜2,000円",
+        rating: "★★★☆☆", 
+        comment: "安い。上野でサクッと飲むならここ。", 
+        recommend: "揚げ物",
+        url: "https://tabelog.com/tokyo/A1311/A131101/13024952/" 
+    },  
+    { 
+        name: "もつ焼き 大統領 支店", 
+        lat: 35.71050835758474,  lng: 139.7754119275287, 
+        isHyakumeiten: false, 
+        category: "居酒屋", 
+        area: "上野",
+        status: "visited", 
+        price: "〜2,000円",
+        rating: "★★★★★", 
+        comment: "内臓であればあるほどうまい", 
+        recommend: "串焼き全般",
+        url: "https://tabelog.com/tokyo/A1311/A131101/13124105/" 
+    },  
+    { 
+        name: "鮨 銀座おのでら 息子渋谷店", 
+        lat: 35.6581907452983,  lng: 139.7001218391716, 
+        isHyakumeiten: false, 
+        category: "寿司", 
+        area: "渋谷",
+        status: "visited", 
+        price: "〜4,000円",
+        rating: "★★★★★", 
+        comment: "高級寿司屋で修行中の板前さんが握る寿司。コスパ最強。", 
+        recommend: "ホタテ・赤身・炙り系",
+        url: "https://tabelog.com/tokyo/A1303/A130301/13294625/" 
+    },  
+    { 
+        name: "名代秘伝の味 じゅげむ 上野御徒町店", 
+        lat: 35.70910206004453,  lng: 139.775294910338, 
+        isHyakumeiten: false, 
+        category: "居酒屋", 
+        area: "上野",
+        status: "wishlist", 
+        price: "〜2,000円?",
+        rating: "", 
+        comment: "たこ焼きのお店らしい", 
+        recommend: "",
+        url: "https://tabelog.com/tokyo/A1311/A131101/13259102/" 
+    },  
+    { 
+        name: "かっちゃん", 
+        lat: 35.71121892411869,  lng: 139.77498377393735, 
+        isHyakumeiten: false, 
+        category: "居酒屋", 
+        area: "上野",
+        status: "visited", 
+        price: "〜2,000円",
+        rating: "★★★★☆", 
+        comment: "天ぷらうまい。安すぎる。", 
+        recommend: "天ぷら",
+        url: "https://tabelog.com/tokyo/A1311/A131101/13115189/" 
+    },  
+    { 
+        name: "立ち呑みura", 
+        lat: 34.60078379726318,  lng: 133.76652358146103,
+        isHyakumeiten: false, 
+        category: "居酒屋", 
+        area: "倉敷",
+        status: "visited", 
+        price: "〜3,000円",
+        rating: "★★★★★", 
+        comment: "サワラを食べてください。お酒も素敵です。", 
+        recommend: "サワラの刺身・サワラの天ぷら",
+        url: "https://tabelog.com/okayama/A3302/A330201/33019801/" 
+    },  
+    { 
+        name: "トリュフベーカリー 軽井沢店", 
+        lat: 36.34351655819901,  lng: 138.62563849686867, 
+        isHyakumeiten: false, 
+        category: "パン", 
+        area: "軽井沢",
+        status: "visited", 
+        price: "〜1,000円",
+        rating: "★★★☆☆", 
+        comment: "トリュフを使ったパンが有名な店。", 
+        recommend: "トリュフ系",
+        url: "https://tabelog.com/nagano/A2003/A200301/20023536/" 
+    },  
+    { 
+        name: "フランスベ－カリー", 
+        lat: 36.3594654140571,  lng: 138.63619015638903, 
+        isHyakumeiten: true, 
+        category: "パン", 
+        area: "軽井沢",
+        status: "visited", 
+        price: "〜1,000円",
+        rating: "★★★☆☆", 
+        comment: "フランスパン専門店", 
+        recommend: "明太子フランス",
+        url: "https://tabelog.com/nagano/A2003/A200301/20000200/" 
+    },  
+    { 
+        name: "A FENESTELLA", 
+        lat: 36.3420337764577,  lng: 138.6024040257044, 
+        isHyakumeiten: true, 
+        category: "イタリアン", 
+        area: "軽井沢",
+        status: "wishlist", 
+        price: "〜7,000円？",
+        rating: "", 
+        comment: "行ってみたい。予約取れない。", 
+        recommend: "",
+        url: "https://tabelog.com/nagano/A2003/A200301/20018926/" 
+    },  
+    { 
+        name: "ザ　カウボーイハウス", 
+        lat: 36.36038587196769,  lng: 138.58914979686946, 
+        isHyakumeiten: true, 
+        category: "ステーキ", 
+        area: "軽井沢",
+        status: "wishlist", 
+        price: "",
+        rating: "", 
+        comment: "早く行かないと食えない", 
+        recommend: "",
+        url: "https://tabelog.com/nagano/A2003/A200301/20000179/" 
+    },  
+    { 
+        name: "ベーカリー&レストラン沢村 旧軽井沢", 
+        lat: 36.35638125174242,  lng: 138.63339981221128, 
+        isHyakumeiten: false, 
+        category: "パン", 
+        area: "軽井沢",
+        status: "visited", 
+        price: "〜2,000円",
+        rating: "★★★★☆", 
+        comment: "種類多め。限定パンに注目", 
+        recommend: "コーンパン",
+        url: "https://tabelog.com/nagano/A2003/A200301/20019109/" 
+    },  
+    { 
+        name: "中村屋", 
+        lat: 36.450873727739065,  lng: 138.25581249193178,
+        isHyakumeiten: false, 
+        category: "うどん", 
+        area: "長野",
+        status: "visited", 
+        price: "〜1,000円",
+        rating: "★★★★★", 
+        comment: "馬肉が乗った肉うどんがうまい。", 
+        recommend: "肉うどん・馬刺し",
+        url: "https://tabelog.com/nagano/A2004/A200401/20003982/" 
+    },  
+    { 
+        name: "麺処 はら田", 
+        lat: 35.849454606879085,  lng: 139.67129563917885, 
+        isHyakumeiten: true, 
+        category: "ラーメン", 
+        area: "南浦和",
+        status: "visited", 
+        price: "〜1,500円",
+        rating: "★★★★★", 
+        comment: "あっさり醤油だけどパンチある。チャーシューも最高。", 
+        recommend: "特製手揉み醤油そば",
+        url: "https://tabelog.com/saitama/A1101/A110102/11049834/" 
+    },  
+    { 
+        name: "立呑み 日々酒々", 
+        lat: 35.910677785916086, lng: 139.62479196616803, 
+        isHyakumeiten: true, 
+        category: "居酒屋", 
+        area: "大宮",
+        status: "visited", 
+        price: "〜2,500円",
+        rating: "★★★★★", 
+        comment: "全て創作料理。日本酒も豊富。料理がうますぎる。店員さんがイケメン。予約必須。", 
+        recommend: "どれ食べてもうまい。酔っ払いエビはマスト。日本酒",
+        url: "https://tabelog.com/saitama/A1101/A110101/11063380/" 
+    },  
+    { 
+        name: "またあした", 
+        lat: 35.90477913640103,  lng: 139.62285563918093,
+        isHyakumeiten: true, 
+        category: "居酒屋", 
+        area: "大宮",
+        status: "visited", 
+        price: "〜3,000円",
+        rating: "★★★★☆", 
+        comment: "海鮮うまい。お酒が安い。", 
+        recommend: "ピリ辛ラー油もやし・刺し盛り",
+        url: "https://tabelog.com/saitama/A1101/A110101/11059003/" 
+    },  
+    { 
+        name: "LIBERTE", 
+        lat: 36.15862911007331,  lng: 139.44886740462692,
+        isHyakumeiten: false, 
+        category: "パン", 
+        area: "行田",
+        status: "visited", 
+        price: "〜1,000円",
+        rating: "★★★★★", 
+        comment: "お惣菜系のパンが美味しい。ここのチーズパンを食わなきゃ意味ない。世界変わる。", 
+        recommend: "チーズのパン",
+        url: "https://tabelog.com/saitama/A1104/A110403/11059794/" 
+    },  
+    { 
+        name: "ぶっかけうどん ふるいち 仲店", 
+        lat: 34.601007071969,  lng: 133.76759741399368, 
+        isHyakumeiten: false, 
+        category: "うどん", 
+        area: "倉敷",
+        status: "visited", 
+        price: "〜1,000円",
+        rating: "★★★★★", 
+        comment: "ぶっかけうどん発祥の店らしい。", 
+        recommend: "ぶっかけうどん",
+        url: "https://tabelog.com/okayama/A3302/A330201/33000046/" 
+    },  
+    { 
+        name: "かっぱ", 
+        lat: 34.60022815874507,  lng: 133.76909925688028, 
+        isHyakumeiten: true, 
+        category: "定食", 
+        area: "倉敷",
+        status: "visited", 
+        price: "〜1,500円",
+        rating: "★★★★★", 
+        comment: "デミグラスソースのかかったトンカツが有名な店。", 
+        recommend: "デミカツ",
+        url: "https://tabelog.com/okayama/A3302/A330201/33000185/" 
+    },  
+    { 
+        name: "へんこつ", 
+        lat: 34, lng: 135, 
+        isHyakumeiten: true, 
+        category: "居酒屋", 
+        area: "京都",
+        status: "visited", 
+        price: "〜2,000円",
+        rating: "★★★★★", 
+        comment: "煮込みしかない", 
+        recommend: "サル",
+        url: "URL" 
+    },  
+    { 
+        name: "へんこつ", 
+        lat: 34, lng: 135, 
+        isHyakumeiten: true, 
+        category: "居酒屋", 
+        area: "京都",
+        status: "visited", 
+        price: "〜2,000円",
+        rating: "★★★★★", 
+        comment: "煮込みしかない", 
+        recommend: "サル",
+        url: "URL" 
+    },  
+    { 
+        name: "へんこつ", 
+        lat: 34, lng: 135, 
+        isHyakumeiten: true, 
+        category: "居酒屋", 
+        area: "京都",
+        status: "visited", 
+        price: "〜2,000円",
+        rating: "★★★★★", 
+        comment: "煮込みしかない", 
+        recommend: "サル",
+        url: "URL" 
+    },  
+    { 
+        name: "へんこつ", 
+        lat: 34, lng: 135, 
+        isHyakumeiten: true, 
+        category: "居酒屋", 
+        area: "京都",
+        status: "visited", 
+        price: "〜2,000円",
+        rating: "★★★★★", 
+        comment: "煮込みしかない", 
+        recommend: "サル",
+        url: "URL" 
+    },  
+    { 
+        name: "へんこつ", 
+        lat: 34, lng: 135, 
+        isHyakumeiten: true, 
+        category: "居酒屋", 
+        area: "京都",
+        status: "visited", 
+        price: "〜2,000円",
+        rating: "★★★★★", 
+        comment: "煮込みしかない", 
+        recommend: "サル",
+        url: "URL" 
+    },  
+    { 
+        name: "へんこつ", 
+        lat: 34, lng: 135, 
+        isHyakumeiten: true, 
+        category: "居酒屋", 
+        area: "京都",
+        status: "visited", 
+        price: "〜2,000円",
+        rating: "★★★★★", 
+        comment: "煮込みしかない", 
+        recommend: "サル",
+        url: "URL" 
+    },  
+    { 
+        name: "へんこつ", 
+        lat: 34, lng: 135, 
+        isHyakumeiten: true, 
+        category: "居酒屋", 
+        area: "京都",
+        status: "visited", 
+        price: "〜2,000円",
+        rating: "★★★★★", 
+        comment: "煮込みしかない", 
+        recommend: "サル",
+        url: "URL" 
+    },  
+    { 
+        name: "へんこつ", 
+        lat: 34, lng: 135, 
+        isHyakumeiten: true, 
+        category: "居酒屋", 
+        area: "京都",
+        status: "visited", 
+        price: "〜2,000円",
+        rating: "★★★★★", 
+        comment: "煮込みしかない", 
+        recommend: "サル",
+        url: "URL" 
+    },  
+    { 
+        name: "へんこつ", 
+        lat: 34, lng: 135, 
+        isHyakumeiten: true, 
+        category: "居酒屋", 
+        area: "京都",
+        status: "visited", 
+        price: "〜2,000円",
+        rating: "★★★★★", 
+        comment: "煮込みしかない", 
+        recommend: "サル",
+        url: "URL" 
+    },  
+    { 
+        name: "へんこつ", 
+        lat: 34, lng: 135, 
+        isHyakumeiten: true, 
+        category: "居酒屋", 
+        area: "京都",
+        status: "visited", 
+        price: "〜2,000円",
+        rating: "★★★★★", 
+        comment: "煮込みしかない", 
+        recommend: "サル",
+        url: "URL" 
+    },  
+    { 
+        name: "へんこつ", 
+        lat: 34, lng: 135, 
+        isHyakumeiten: true, 
+        category: "居酒屋", 
+        area: "京都",
+        status: "visited", 
+        price: "〜2,000円",
+        rating: "★★★★★", 
+        comment: "煮込みしかない", 
+        recommend: "サル",
+        url: "URL" 
+    },  
+    { 
+        name: "へんこつ", 
+        lat: 34, lng: 135, 
+        isHyakumeiten: true, 
+        category: "居酒屋", 
+        area: "京都",
+        status: "visited", 
+        price: "〜2,000円",
+        rating: "★★★★★", 
+        comment: "煮込みしかない", 
+        recommend: "サル",
+        url: "URL" 
+    },  
+    { 
+        name: "へんこつ", 
+        lat: 34, lng: 135, 
+        isHyakumeiten: true, 
+        category: "居酒屋", 
+        area: "京都",
+        status: "visited", 
+        price: "〜2,000円",
+        rating: "★★★★★", 
+        comment: "煮込みしかない", 
+        recommend: "サル",
+        url: "URL" 
+    },  
+    { 
+        name: "へんこつ", 
+        lat: 34, lng: 135, 
+        isHyakumeiten: true, 
+        category: "居酒屋", 
+        area: "京都",
+        status: "visited", 
+        price: "〜2,000円",
+        rating: "★★★★★", 
+        comment: "煮込みしかない", 
+        recommend: "サル",
+        url: "URL" 
+    },  
+
+    // ジャンル名は HTML の <option value="..."> と一字一句合わせてください
 ];
 
-// 距離計算（ハバサイン公式）
+// 距離計算などのロジック（変更なし）
 function getDistance(lat1, lng1, lat2, lng2) {
-    const R = 6371; 
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLng = (lng2 - lng1) * Math.PI / 180;
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-              Math.sin(dLng / 2) * Math.sin(dLng / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
+    const R = 6371;
+    const dLat = (lat2-lat1)*Math.PI/180;
+    const dLng = (lng2-lng1)*Math.PI/180;
+    const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
 
 function updateGourmetList() {
-    const genreFilter = document.getElementById('gourmet-genre-select').value;
-    const statusFilter = document.getElementById('gourmet-status-select').value;
+    const genre = document.getElementById('gourmet-genre-select').value;
+    const status = document.getElementById('gourmet-status-select').value;
     const listDiv = document.getElementById('gourmet-list');
-
-    if (!navigator.geolocation) {
-        alert("位置情報が使えません");
-        return;
-    }
-
+    
     listDiv.innerHTML = "<p style='text-align:center;'>現在地を取得中...</p>";
 
-    navigator.geolocation.getCurrentPosition((position) => {
-        const userLat = position.coords.latitude;
-        const userLng = position.coords.longitude;
-
-        // 距離追加 & フィルター
-        let sortedShops = myShops.map(shop => ({
-            ...shop,
-            distance: getDistance(userLat, userLng, shop.lat, shop.lng)
-        }));
-
-        // 条件絞り込み
-        sortedShops = sortedShops.filter(shop => {
-            const genreMatch = (genreFilter === 'all' || shop.category === genreFilter);
-            const statusMatch = (statusFilter === 'all' || shop.status === statusFilter);
-            return genreMatch && statusMatch;
-        });
-
-        // 近い順にソート
-        sortedShops.sort((a, b) => a.distance - b.distance);
-
-        if (sortedShops.length === 0) {
-            listDiv.innerHTML = "<p>該当するお店がありません。</p>";
+    navigator.geolocation.getCurrentPosition(pos => {
+        const uLat = pos.coords.latitude;
+        const uLng = pos.coords.longitude;
+        
+        let shops = myShops.map(s => ({...s, dist: getDistance(uLat, uLng, s.lat, s.lng)}))
+            .filter(s => (genre==='all'||s.category===genre) && (status==='all'||s.status===status))
+            .sort((a,b) => a.dist - b.dist);
+            
+        if (shops.length === 0) {
+            listDiv.innerHTML = "<p>条件に合うお店がありません。</p>";
             return;
         }
 
-        // HTML生成
-        listDiv.innerHTML = sortedShops.map(shop => {
-            const isVisited = shop.status === 'visited';
-            const statusLabel = isVisited ? "✅ 行ってよかった" : "📌 行ってみたい";
-            const labelColor = isVisited ? "#4cc9f0" : "#ff9e00";
+        listDiv.innerHTML = shops.map(s => {
+            const borderColor = s.isHyakumeiten ? '#ffd700' : (s.status === 'visited' ? '#4cc9f0' : '#ff9e00');
+            const badge = s.isHyakumeiten ? '<span style="background:#ffd700; color:#1a1a2e; padding:2px 6px; border-radius:4px; font-size:0.7rem; font-weight:bold; margin-left:8px; vertical-align:middle;">🏆 百名店</span>' : '';
 
             return `
-                <div style="background:#0f3460; padding:15px; border-radius:10px; margin-bottom:10px; border-left: 5px solid ${labelColor};">
+                <div style="background:#0f3460; padding:15px; border-radius:10px; margin-bottom:10px; border-left:5px solid ${borderColor};">
                     <div style="display:flex; justify-content:space-between; align-items:start;">
-                        <strong style="font-size:1.1rem;">${shop.name}</strong>
-                        <span style="font-size:0.8rem; color:${labelColor};">📍約${shop.distance.toFixed(1)}km</span>
+                        <div>
+                            <strong style="font-size:1.1rem;">${s.name}</strong>${badge}
+                            <!-- エリア表示を追加 -->
+                            <div style="font-size:0.75rem; color:#4cc9f0; margin-top:4px;">📍 ${s.area}</div>
+                        </div>
+                        <small style="color:#4cc9f0;">${s.dist.toFixed(1)}km</small>
                     </div>
+            
                     <div style="font-size:0.85rem; margin:8px 0; color:#ddd;">
-                        <span style="background:#1a1a2e; padding:3px 8px; border-radius:4px; font-weight:bold;">${statusLabel}</span>
-                        ${isVisited ? `<span style="color:#ffdc34; margin-left:10px;">${shop.rating}</span>` : ""}
+                        <span>${s.category}</span> | <span style="color:#ffdc34;">${s.price}</span>
+                        ${s.status === 'visited' ? `<span style="margin-left:10px; color:#ffdc34;">${s.rating}</span>` : ""}
                     </div>
-                    <p style="font-size:0.85rem; color:#ccc; margin:5px 0;">"${shop.comment}"</p>
-                    <a href="${shop.url}" target="_blank" style="color:#4cc9f0; font-size:0.8rem;">食べログを見る →</a>
+
+                    <div style="background: rgba(76, 201, 240, 0.1); padding: 5px 10px; border-radius: 5px; margin: 8px 0; display: inline-block;">
+                        <small style="color:#4cc9f0; font-weight:bold;">✨ おすすめ: ${s.recommend}</small>
+                    </div>
+
+                    <p style="font-size:0.8rem; color:#ccc; margin:5px 0;">"${s.comment}"</p>
+                    <a href="${s.url}" target="_blank" style="color:#4cc9f0; font-size:0.75rem;">詳細を見る</a>
                 </div>
             `;
-        }).join('');
-    }, () => {
-        listDiv.innerHTML = "<p>位置情報の取得に失敗しました。</p>";
+        }).join('');    }, (error) => {
+        let msg = "";
+        switch(error.code) {
+            case 1: msg = "位置情報の利用が許可されていません。設定を確認してください。"; break;
+            case 2: msg = "デバイスの位置を特定できません（電波状況など）。"; break;
+            case 3: msg = "タイムアウトしました。"; break;
+            default: msg = "不明なエラーが発生しました。"; break;
+        }
+        listDiv.innerHTML = `<p style="color:#ff4d4d;">${msg}</p>`;
     });
+}
+// 4. ito / 占い
+function generateRandomNumber() {
+    const display = document.getElementById('number-display');
+    display.innerText = Math.floor(Math.random()*100)+1;
+}
+function tellFortune() {
+    const m = ["大吉", "中吉", "小吉", "吉", "天文吉"];
+    document.getElementById('fortune-text').innerText = "運勢: " + m[Math.floor(Math.random()*m.length)];
+    const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16);
+    document.body.style.background = randomColor;
 }

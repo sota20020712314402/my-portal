@@ -34,50 +34,51 @@
             <ul class="link-list">
                 <li><a href="http://www.astron.sci.edu.saitama-u.ac.jp/" target="_blank">埼玉大学 宇宙物理学研究室</a></li>
                 <li><a href="https://ui.adsabs.harvard.edu/" target="_blank">NASA ADS</a></li>
-                <!-- <li><a href="https://github.com/" target="_blank">GitHub</a></li> -->
+                <li><a href="https://github.com/" target="_blank">GitHub</a></li>
             </ul>
         </div>
 
-       <div id="my-gourmet" class="tab-content">
-    <h2>My Gourmet List</h2>
-    
-    <!-- 絞り込み設定 -->
-    <div style="background: #1a1a2e; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
-        <p style="font-size: 0.9rem; margin-bottom: 8px;">1. ジャンルを選択</p>
-        <select id="gourmet-genre-select" style="width: 100%;">
-            <option value="all">すべて表示</option>
-            <option value="ラーメン">🍜 ラーメン</option>
-            <option value="定食">🍱 定食</option>
-            <option value="カフェ">☕ カフェ・スイーツ</option>
-            <option value="イタリアン">🍝 イタリアン</option>
-        </select>
+       <!-- グルメタブ -->
+        <div id="my-gourmet" class="tab-content">
+        <h2>My Gourmet List</h2>
+        <div style="background: #1a1a2e; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+            <p style="font-size: 0.8rem; margin-bottom: 5px;">ジャンル</p>
+            <select id="gourmet-genre-select">
+                <option value="all">すべて表示</option>
+                <option value="ラーメン">🍜 ラーメン</option>
+                <option value="定食">🍱 定食</option>
+                <option value="寿司">🍣 寿司</option>
+                <option value="パン">🍞 パン</option>
+                <option value="イタリアン">🍝 イタリアン</option>
+                <option value="ハンバーガー">🍔 ハンバーガー</option>
+                <option value="居酒屋">🍶 居酒屋</option>
+                <option value="カフェ">☕ カフェ・スイーツ</option>
+            </select>
 
-        <p style="font-size: 0.9rem; margin: 15px 0 8px;">2. ステータスを選択</p>
-        <select id="gourmet-status-select" style="width: 100%;">
-            <option value="all">すべて（混在）</option>
-            <option value="visited">行ってよかった（評価あり）</option>
-            <option value="wishlist">行ってみたい（未開拓）</option>
-        </select>
+            <!-- ここを追加：ステータスの選択がないとJSでエラーになる可能性があります -->
+            <p style="font-size: 0.8rem; margin: 10px 0 5px;">ステータス</p>
+            <select id="gourmet-status-select">
+                <option value="all">すべて</option>
+                <option value="visited">行ってよかった</option>
+                <option value="wishlist">行ってみたい</option>
+            </select>
 
-        <button onclick="updateGourmetList()" style="width: 100%; margin-top: 15px;">近い順に検索</button>
-    </div>
-    
-    <div id="gourmet-list" style="text-align:left;">
-        <!-- ここに結果が出ます -->
-    </div>
- </div>
-        <!-- ito用 乱数生成ツール -->
+            <button onclick="updateGourmetList()" style="width: 100%; margin-top: 15px;">近い順に検索</button>
+        </div>
+        <div id="gourmet-list" style="text-align:left;"></div>
+        </div>
+        <!-- itoタブ -->
         <div id="ito" class="tab-content">
             <h2>ito Helper</h2>
-            <p>1〜100の数字をランダムに引きます。<br>他の人に見られないように注意！</p>
-            <div id="number-display" style="font-size: 5rem; font-weight: bold; color: #4cc9f0; margin: 20px 0; min-height: 120px;">?</div>
+            <p>1〜100の数字をランダムに引きます。</p>
+            <div id="number-display" style="font-size: 5rem; font-weight: bold; color: #4cc9f0; margin: 20px 0;">?</div>
             <button onclick="generateRandomNumber()">数字を引く</button>
-            <p style="margin-top: 20px; font-size: 0.8rem; color: #888;">※クリックするたびに新しい数字が出ます</p>
         </div>
 
+        <!-- お便りタブ -->
         <div id="message" class="tab-content">
             <h2>お便りコーナー</h2>
-            <p>メッセージを送ると管理者に届きます。<br>返信が必要な方はメアドを添えてください。</p>
+            <p>管理者にメールが届きます。<br>返信が必要な方はメアドを書いてください！</p>
             <form action="https://formspree.io/f/あなたのID" method="POST">
                 <input type="text" name="name" placeholder="お名前" required>
                 <textarea name="message" placeholder="メッセージ内容" required></textarea>
