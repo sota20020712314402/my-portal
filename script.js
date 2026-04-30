@@ -1,7 +1,7 @@
 // --- 1. パスワード保護 (簡易) ---
 (function() {
     const password = prompt("パスワードを入力してください");
-    if (password !== "sota123") { // パスワードはここで変更可能
+    if (password !== "0712") { // パスワードはここで変更可能
         alert("アクセス拒否");
         document.body.innerHTML = '<div style="color:white; text-align:center; margin-top:100px;"><h1>Forbidden</h1><p>正しいパスワードが必要です。</p></div>';
         window.stop();
