@@ -1,24 +1,27 @@
+/* 全体の基本スタイル */
 body {
-    background: #050510; /* より深い宇宙の黒 */
+    background: #1a1a2e;
     color: #e9ecef;
-    font-family: sans-serif;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
     margin: 0;
     display: flex;
     justify-content: center;
     min-height: 100vh;
+    transition: background 0.5s ease;
 }
 
 .container {
     margin-top: 80px;
     width: 90%;
     max-width: 600px;
-    background: #111122;
+    background: #16213e;
     padding: 30px;
     border-radius: 15px;
     text-align: center;
-    box-shadow: 0 0 20px rgba(76, 201, 240, 0.2);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
+/* 三本線アイコン */
 .menu-icon {
     width: 30px;
     height: 20px;
@@ -37,24 +40,29 @@ body {
     height: 3px;
     width: 100%;
     background-color: #4cc9f0;
+    border-radius: 3px;
     transition: 0.3s;
 }
 
+/* サイドバー */
 .sidebar {
     position: fixed;
     top: 0;
     left: -250px;
     width: 250px;
     height: 100%;
-    background: #0a0a1a;
+    background: #0f3460;
     display: flex;
     flex-direction: column;
     padding-top: 80px;
-    transition: 0.3s;
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 100;
+    box-shadow: 5px 0 15px rgba(0,0,0,0.3);
 }
 
-.sidebar.open { left: 0; }
+.sidebar.open {
+    left: 0;
+}
 
 .tab-btn {
     background: none;
@@ -64,34 +72,68 @@ body {
     text-align: left;
     font-size: 1rem;
     cursor: pointer;
+    border-bottom: 1px solid #16213e;
+    transition: 0.2s;
 }
 
-.tab-btn.active { color: #4cc9f0; background: #1a1a3a; }
+.tab-btn:hover, .tab-btn.active {
+    color: #4cc9f0;
+    background: #1a1a2e;
+}
+
+/* フォーム要素のスタイル */
+input, textarea {
+    background: #1a1a2e;
+    color: white;
+    border: 1px solid #4cc9f0;
+    padding: 12px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    width: 80%;
+    font-size: 1rem;
+}
+
+textarea {
+    height: 120px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: #4895ef;
+    box-shadow: 0 0 8px rgba(76, 201, 240, 0.4);
+}
 
 button {
     background: #4cc9f0;
+    color: #1a1a2e;
     border: none;
-    padding: 10px 20px;
+    padding: 10px 25px;
     border-radius: 5px;
-    cursor: pointer;
     font-weight: bold;
-    margin-top: 10px;
+    cursor: pointer;
+    transition: 0.2s;
 }
 
-/* プラネタリウム用のキャンバス設定 */
-#starCanvas {
-    background: #000;
-    border: 1px solid #4cc9f0;
-    width: 100%;
-    height: 300px;
-    margin-top: 15px;
-    border-radius: 10px;
-    cursor: crosshair;
+button:hover {
+    background: #4895ef;
+    transform: translateY(-2px);
 }
 
+/* タブの表示制御 */
 .tab-content { display: none; }
-.tab-content.active { display: block; }
+.tab-content.active { display: block; animation: fadeIn 0.5s; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
 .link-list { list-style: none; padding: 0; }
 .link-list li { margin: 15px 0; }
-.link-list a { color: #4cc9f0; text-decoration: none; }
+.link-list a { color: #4cc9f0; text-decoration: none; font-size: 1.1rem; transition: 0.2s; }
+.link-list a:hover { text-decoration: underline; }
+#number-display {
+    transition: opacity 0.2s ease;
+}
