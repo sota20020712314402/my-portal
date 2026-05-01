@@ -71,6 +71,30 @@
         </div>
         <div id="gourmet-list" style="text-align:left;"></div>
         </div>
+        <div id="admin" class="tab-content">
+    <h2>ショップデータ生成</h2>
+    <div style="background: #1a1a2e; padding: 20px; border-radius: 10px; display: flex; flex-direction: column; gap: 10px;">
+        <input type="text" id="in-name" placeholder="店名">
+        <input type="text" id="in-area" placeholder="地域">
+        <div style="display:flex; gap:10px;">
+            <input type="number" id="in-lat" placeholder="緯度" step="any">
+            <input type="number" id="in-lng" placeholder="経度" step="any">
+        </div>
+        <select id="in-cat">
+            <option value="居酒屋">居酒屋</option>
+            <option value="パン">パン</option>
+            <!-- 他のジャンルも追加 -->
+        </select>
+        <textarea id="in-comment" placeholder="コメント" style="height:60px;"></textarea>
+        <input type="text" id="in-rec" placeholder="おすすめメニュー">
+        <label style="font-size:0.8rem;"><input type="checkbox" id="in-hyaku"> 百名店</label>
+        
+        <button onclick="generateJSON()">JSONコードを生成</button>
+        
+        <p style="font-size:0.7rem; margin-top:10px;">生成されたコード（shops.jsonに貼り付け用）:</p>
+        <textarea id="out-json" readonly style="height:150px; font-family:monospace; font-size:0.7rem;"></textarea>
+    </div>
+    </div>
         <!-- itoタブ -->
         <div id="ito" class="tab-content">
             <h2>ito Helper</h2>
