@@ -14,11 +14,12 @@
 
     <nav id="sidebar" class="sidebar">
         <button class="tab-btn active" onclick="openTab('home')">Home</button>
+        <button class="tab-btn" onclick="openTab('soccer')">⚽ Soccer Replay</button> <button class="tab-btn" onclick="openTab('my-gourmet')">My Gourmet</button>
         <button class="tab-btn" onclick="openTab('links')">Useful Links</button>
-        <button class="tab-btn" onclick="openTab('my-gourmet')">My Gourmet</button>
         <button class="tab-btn" onclick="openTab('ito')">ito Helper</button>
         <button class="tab-btn" onclick="openTab('message')">Contact Me</button>
         <button class="tab-btn" onclick="openTab('fortune')">Fortune</button>
+        <button class="tab-btn" onclick="openTab('admin')">Admin</button>
     </nav>
 
     <div class="container">
@@ -27,6 +28,52 @@
         <div id="home" class="tab-content active">
             <h2>Welcome</h2>
             <p>メニューから機能を選択してください。</p>
+        </div>
+
+        <div id="soccer" class="tab-content">
+            <h2>Match Replay</h2>
+            <p>過去の試合をタイムラインで振り返ります。</p>
+            
+            <div class="soccer-controls">
+                <select id="league-select" onchange="loadStandings()">
+                    <option value="jleague">J1リーグ (デモ)</option>
+                    <option value="premier">プレミアリーグ (準備中)</option>
+                </select>
+                <button onclick="startMatchReplay()">▶ 試合を再生する</button>
+            </div>
+
+            <div class="scoreboard">
+                <div class="team">
+                    <div id="team-home-name" class="team-name">浦和レッズ</div>
+                    <div id="score-home" class="score">0</div>
+                </div>
+                <div class="match-center">
+                    <div id="match-timer" class="timer">00'</div>
+                    <div class="vs">VS</div>
+                </div>
+                <div class="team">
+                    <div id="team-away-name" class="team-name">大宮アルディージャ</div>
+                    <div id="score-away" class="score">0</div>
+                </div>
+            </div>
+
+            <div id="event-log" class="event-log">
+                <p style="color: #888;">試合開始を待っています...</p>
+            </div>
+
+            <h3 style="margin-top: 30px;">League Standings</h3>
+            <table class="standings-table">
+                <thead>
+                    <tr>
+                        <th>順位</th>
+                        <th style="text-align: left;">チーム</th>
+                        <th>勝点</th>
+                        <th>得失差</th>
+                    </tr>
+                </thead>
+                <tbody id="standings-body">
+                    </tbody>
+            </table>
         </div>
 
         <div id="links" class="tab-content">
@@ -38,64 +85,100 @@
             </ul>
         </div>
 
-       <!-- グルメタブ -->
         <div id="my-gourmet" class="tab-content">
-        <h2>My Gourmet List</h2>
-        <div style="background: #1a1a2e; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
-            <p style="font-size: 0.8rem; margin-bottom: 5px;">ジャンル</p>
-            <select id="gourmet-genre-select">
-                <option value="all">すべて表示</option>
-                <option value="ラーメン">🍜 ラーメン</option>
-                <option value="定食">🍱 定食</option>
-                <option value="和食">🍱 和食</option>
-                <option value="焼き肉">🍖 焼き肉</option>
-                <option value="ステーキ">🥩 ステーキ</option>
-                <option value="うどん">🍜 うどん</option>
-                <option value="寿司">🍣 寿司</option>
-                <option value="パン">🍞 パン</option>
-                <option value="イタリアン">🍝 イタリアン</option>
-                <option value="ハンバーガー">🍔 ハンバーガー</option>
-                <option value="居酒屋">🍶 居酒屋</option>
-                <option value="カフェ">☕ カフェ・スイーツ</option>
-            </select>
+            <h2>My Gourmet List</h2>
+            <div style="background: #1a1a2e; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                <p style="font-size: 0.8rem; margin-bottom: 5px;">ジャンル</p>
+                <select id="gourmet-genre-select">
+                    <option value="all">すべて表示</option>
+                    <option value="ラーメン">🍜 ラーメン</option>
+                    <option value="定食">🍱 定食</option>
+                    <option value="和食">🍱 和食</option>
+                    <option value="焼き肉">🍖 焼き肉</option>
+                    <option value="中華">🥟 中華</option>
+                    <option value="お好み焼き">🍳 お好み焼き</option>
+                    <option value="ステーキ">🥩 ステーキ</option>
+                    <option value="うどん">🍜 うどん</option>
+                    <option value="寿司">🍣 寿司</option>
+                    <option value="パン">🍞 パン</option>
+                    <option value="イタリアン">🍝 イタリアン</option>
+                    <option value="ハンバーガー">🍔 ハンバーガー</option>
+                    <option value="居酒屋">🍶 居酒屋</option>
+                    <option value="カフェ">☕ カフェ・スイーツ</option>
+                </select>
 
-            <!-- ここを追加：ステータスの選択がないとJSでエラーになる可能性があります -->
-            <p style="font-size: 0.8rem; margin: 10px 0 5px;">ステータス</p>
-            <select id="gourmet-status-select">
-                <option value="all">すべて</option>
-                <option value="visited">行ってよかった</option>
-                <option value="wishlist">行ってみたい</option>
-            </select>
+                <p style="font-size: 0.8rem; margin: 10px 0 5px;">ステータス</p>
+                <select id="gourmet-status-select">
+                    <option value="all">すべて</option>
+                    <option value="visited">行ってよかった</option>
+                    <option value="wishlist">行ってみたい</option>
+                </select>
 
-            <button onclick="updateGourmetList()" style="width: 100%; margin-top: 15px;">近い順に検索</button>
+                <button onclick="updateGourmetList()" style="width: 100%; margin-top: 15px;">近い順に検索</button>
+            </div>
+            <div id="gourmet-list" style="text-align:left;"></div>
         </div>
-        <div id="gourmet-list" style="text-align:left;"></div>
-        </div>
+
         <div id="admin" class="tab-content">
-    <h2>ショップデータ生成</h2>
-    <div style="background: #1a1a2e; padding: 20px; border-radius: 10px; display: flex; flex-direction: column; gap: 10px;">
-        <input type="text" id="in-name" placeholder="店名">
-        <input type="text" id="in-area" placeholder="地域">
-        <div style="display:flex; gap:10px;">
-            <input type="number" id="in-lat" placeholder="緯度" step="any">
-            <input type="number" id="in-lng" placeholder="経度" step="any">
+            <h2>ショップデータ登録補助</h2>
+            <div style="background: #1a1a2e; padding: 20px; border-radius: 10px; display: flex; flex-direction: column; gap: 10px;">
+                <input type="text" id="in-name" placeholder="店名（必須）">
+                <input type="text" id="in-area" placeholder="地域（例：大宮、浦和）">
+        
+                <div style="display:flex; gap:10px; align-items: center;">
+                    <input type="number" id="in-lat" placeholder="緯度" step="any" style="flex:1;">
+                    <input type="number" id="in-lng" placeholder="経度" step="any" style="flex:1;">
+                    <button onclick="getCurrentLocationForAdmin()" style="width: auto; padding: 10px; font-size: 0.8rem;">📍 現在地を入れる</button>
+                </div>
+
+                <div style="display:flex; gap:10px;">
+                    <select id="in-cat" style="flex:1;">
+                        <option value="居酒屋">🍶 居酒屋</option>
+                        <option value="パン">🍞 パン</option>
+                        <option value="ラーメン">🍜 ラーメン</option>
+                        <option value="定食">🍱 定食</option>
+                        <option value="和食">🍱 和食</option>
+                        <option value="うどん">🍜 うどん</option>
+                        <option value="お好み焼き">🍳 お好み焼き</option>
+                        <option value="そば">🍜 そば</option>
+                        <option value="ハンバーガー">🍔 ハンバーガー</option>
+                        <option value="寿司">🍣 寿司</option>
+                        <option value="焼き肉">🍖 焼き肉</option>
+                        <option value="中華">🥟 中華</option>
+                        <option value="イタリアン">🍝 イタリアン</option>
+                        <option value="カフェ">☕ カフェ</option>
+                    </select>
+                    <select id="in-status" style="flex:1;">
+                        <option value="visited">行った</option>
+                        <option value="wishlist">行きたい</option>
+                    </select>
+                </div>
+
+                <input type="text" id="in-price" placeholder="予算（例：〜3,000円）">
+                <select id="in-rating">
+                    <option value="★★★★★">★★★★★ (最高)</option>
+                    <option value="★★★★☆">★★★★☆ (満足)</option>
+                    <option value="★★★☆☆">★★★☆☆ (普通)</option>
+                    <option value="★★☆☆☆">★★☆☆☆ (微妙)</option>
+                    <option value="★☆☆☆☆">★☆☆☆☆ (ハズレ)</option>
+                </select>
+        
+                <textarea id="in-comment" placeholder="コメント" style="height:60px;"></textarea>
+                <input type="text" id="in-rec" placeholder="おすすめメニュー">
+                <input type="text" id="in-url" placeholder="食べログ等のURL">
+        
+                <label style="font-size:0.9rem; cursor:pointer;">
+                    <input type="checkbox" id="in-hyaku"> 🏆 百名店
+                </label>
+        
+                <button onclick="generateJSON()" style="background: #4cc9f0; color: #1a1a2e; font-weight: bold;">JSONコードを生成</button>
+        
+                <p style="font-size:0.7rem; margin-top:10px; color: #aaa;">生成されたコード（shops.jsonの [ ] の中に追加してください）:</p>
+                <textarea id="out-json" readonly style="height:120px; font-family:monospace; font-size:0.7rem; background: #000; color: #0f0;"></textarea>
+                <button onclick="copyJSON()" style="font-size: 0.8rem; background: #333;">コピーする</button>
+            </div>
         </div>
-        <select id="in-cat">
-            <option value="居酒屋">居酒屋</option>
-            <option value="パン">パン</option>
-            <!-- 他のジャンルも追加 -->
-        </select>
-        <textarea id="in-comment" placeholder="コメント" style="height:60px;"></textarea>
-        <input type="text" id="in-rec" placeholder="おすすめメニュー">
-        <label style="font-size:0.8rem;"><input type="checkbox" id="in-hyaku"> 百名店</label>
-        
-        <button onclick="generateJSON()">JSONコードを生成</button>
-        
-        <p style="font-size:0.7rem; margin-top:10px;">生成されたコード（shops.jsonに貼り付け用）:</p>
-        <textarea id="out-json" readonly style="height:150px; font-family:monospace; font-size:0.7rem;"></textarea>
-    </div>
-    </div>
-        <!-- itoタブ -->
+
         <div id="ito" class="tab-content">
             <h2>ito Helper</h2>
             <p>1〜100の数字をランダムに引きます。</p>
@@ -103,7 +186,6 @@
             <button onclick="generateRandomNumber()">数字を引く</button>
         </div>
 
-        <!-- お便りタブ -->
         <div id="message" class="tab-content">
             <h2>お便りコーナー</h2>
             <p>管理者にメールが届きます。<br>返信が必要な方はメアドを書いてください！</p>
